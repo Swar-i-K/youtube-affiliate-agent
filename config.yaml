@@ -1,0 +1,36 @@
+# ------------------------------------------------------------------
+# YouTube Affiliate Agent: writes script.md for your video agent, plus the YouTube title,
+# description, tags, hashtags, comparison points and a shot list. It never uploads or renders anything.
+# ------------------------------------------------------------------
+length: short            # short = about 3 minutes (the video agent's "short" length, 1.5-4.8 min)
+                         # auto  = by video type: single product ~5 min, comparison ~7.5 min
+                         # IMPORTANT: choose the SAME length in the video agent's workflow, or its render step may reject the script.
+
+voice:
+  max_exclamations: 2    # enthusiasm without shouting; extra "!" become full stops
+  min_words_per_line: 4
+  max_words_per_line: 34
+  style_file: style_example.txt   # your own example voice-over (rhythm and tone only; none of its facts are reused)
+
+keywords:
+  secondary_max: 4       # how many secondary keywords are worked into the narration
+
+llm:
+  model: "openai/gpt-oss-120b"
+  max_tokens: 6000
+
+# Keep these in sync with the video agent's config.yaml (they are used to estimate the video length).
+timing:
+  wpm: 155
+  pause_sentence: 0.40
+  pause_section: 0.75
+  lead_in: 0.8
+  tail: 4.0
+  outro_words: 22        # the sign-off line the video agent adds automatically
+  disclosure_mode: description_only   # full | on_screen | description_only  (same setting as the video agent)
+  disclosure_words: 24   # only counted when disclosure_mode is full
+
+length_presets:          # same numbers as the video agent
+  review:  {min_minutes: 3.5, max_minutes: 8.0, target_minutes: 5.0}
+  compare: {min_minutes: 5.5, max_minutes: 8.8, target_minutes: 7.5}
+  short:   {min_minutes: 1.5, max_minutes: 4.8, target_minutes: 3.0}
