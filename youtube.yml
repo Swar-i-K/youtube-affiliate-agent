@@ -1,0 +1,49 @@
+name: YouTube Affiliate Agent
+
+on:
+  workflow_dispatch:
+    inputs:
+      project:
+        description: "Project folder name (an ASIN or a COMPARE-... folder), or all"
+        required: false
+        default: "all"
+      length:
+        description: "short = about 3 min (use the same in the video agent) | auto = by video type (single ~5 min, comparison ~7.5 min)"
+        required: false
+        default: "short"
+        type: choice
+        options: [short, auto]
+
+jobs:
+  youtube:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+
+    steps:
+      - name: Checkout repo
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+
+      - name: Install Python dependencies
+        run: pip install -r requirements.txt
+
+      - name: Run YouTube affiliate agent
+        env:
+          GROQ_API_KEY: ${{ secrets.GROQ_API_KEY }}
+          PROJECT: ${{ github.event.inputs.project }}
+          LENGTH: ${{ github.event.inputs.length }}
+        run: python main.py
+
+      - name: Upload scripts and YouTube text
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: youtube-scripts
+          path: |
+            output/
+            run_summary.json
+          if-no-files-found: ignore
